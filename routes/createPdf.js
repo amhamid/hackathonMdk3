@@ -42,9 +42,24 @@ router.post('/', function(req, res, next) {
    digitalSignSh.stdout.on('data', function (data) {
       var parsedData = JSON.parse(data)
 
+      var uploadFileSh = spawn('bash', [ 'upload-file.sh', parsedData.File.Id], {
+         cwd: process.env.HOME + '/dev/digiSign',
+         env:_.extend(process.env, { PATH: process.env.PATH + ':/usr/local/bin' })
+      });
 
+      uploadFileSh.stdout.on('data', function (data) {
+         console.log('stdout: ' + data);
+      });
 
-      console.log('stdout: ' + parsedData.Id);
+      uploadFileSh.stderr.on('data', function (data) {
+         console.log('stderr: ' + data);
+      });
+
+      uploadFileSh.on('close', function (code) {
+         console.log('child process exited with code ' + code);
+      });
+
+      console.log('stdout: ' + data);   
    });
 
    digitalSignSh.stderr.on('data', function (data) {
