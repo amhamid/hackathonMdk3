@@ -18,17 +18,31 @@ router.post('/', function(req, res, next) {
    doc.pipe(fs.createWriteStream('contract.pdf'))
 
    var content= 
-   'Requester name: ' + req.body.RequesterName +
-   '\nRequester email: ' +    req.body.RequesterEmail +
-   '\nReceiver name: ' +    req.body.ReceiverName +
-   '\nReceiver email: ' +    req.body.ReceiverEmail +
    '\nProduct name: ' +    req.body.Product +
    '\nWeight in KG: ' +    req.body.Weight +
    '\nValue in US Dollars: ' +    req.body.Value +
-   '\nExecution date: ' +    req.body.Date 
+   '\nExecution date: ' +    req.body.Date +
+   '\n\n\nRequester name: ' + req.body.RequesterName +
+   '\nRequester email: ' +    req.body.RequesterEmail 
+
+   var sign1= '\n\n {{signer1}}'
+
+   var content2= 
+   '\n\n\nReceiver name: ' +    req.body.ReceiverName +
+   '\nReceiver email: ' +    req.body.ReceiverEmail
+
+   var sign2=
+   '\n\n {{signer2}} \n'
 
    doc.fontSize(20)
+      .fillColor('black')
       .text(content, 100, 100)
+      .fillColor('white')
+      .text(sign1)
+      .fillColor('black')
+      .text(content2)
+      .fillColor('white')
+      .text(sign2)
 
    // Finalize PDF file
    doc.end()
@@ -58,10 +72,10 @@ router.post('/', function(req, res, next) {
             'SignRequestMessage': 'Hello, could you please sign this document? Best regards, IndoVidence',
             'DaysToRemind': 15,
             'Language': 'en-US',
-            'ScribbleName': '$requesterName',
-            'ScribbleNameFixed': false,
+            'ScribbleName': req.body.RequesterName,
+            'ScribbleNameFixed': true,
             'Reference': 'Client #123',
-            'ReturnUrl': 'http://signhost.com',
+            'ReturnUrl': 'http://indovidence.bataviasoft.com',
             'Context': null
           },
           {
@@ -82,10 +96,10 @@ router.post('/', function(req, res, next) {
             'SignRequestMessage': 'Hello, could you please sign this document? Best regards, IndoVidence',
             'DaysToRemind': 15,
             'Language': 'en-US',
-            'ScribbleName': 'IndoVidence',
-            'ScribbleNameFixed': false,
+            'ScribbleName': req.body.ReceiverName,
+            'ScribbleNameFixed': true,
             'Reference': 'Client #123',
-            'ReturnUrl': 'http://signhost.com',
+            'ReturnUrl': 'http://indovidence.bataviasoft.com',
             'Context': null
           }
         ],
