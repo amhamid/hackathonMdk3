@@ -4,6 +4,9 @@ var fs = require('fs')
 var router = express.Router();
 var spawn = require('child_process').spawn;
 var _ = require('underscore')
+var request = require('request')
+var path = require('path')
+var unirest = require('unirest')
 
 /* GET home page. */
 router.post('/', function(req, res, next) {
@@ -31,46 +34,114 @@ router.post('/', function(req, res, next) {
    doc.end()
 
    // this will create transaction 
-   var digitalSignSh = spawn('bash', [ 'create-transaction.sh', req.body.RequesterName, 
-                                                                req.body.RequesterEmail,
-                                                                req.body.ReceiverName,
-                                                                req.body.ReceiverEmail], {
-      cwd: process.env.HOME + '/dev/digiSign',
-      env:_.extend(process.env, { PATH: process.env.PATH + ':/usr/local/bin' })
-   });
+   var postData = {
+        'File': {
+          'Name': 'contract.pdf'
+        },
+        'Seal': true,
+        'Signers': [
+          {
+            'Email': req.body.RequesterEmail,
+            'Mobile': null,
+            'Iban': null,
+            'BSN': null,
+            'RequireScribbleName': false,
+            'RequireScribble': true,
+            'RequireEmailVerification': true,
+            'RequireSmsVerification': false,
+            'RequireIdealVerification': false,
+            'RequireDigidVerification': false,
+            'RequireKennisnetVerification': false,
+            'RequireSurfnetVerification': false,
+            'SendSignRequest': true,
+            'SendSignConfirmation': null,
+            'SignRequestMessage': 'Hello, could you please sign this document? Best regards, IndoVidence',
+            'DaysToRemind': 15,
+            'Language': 'en-US',
+            'ScribbleName': '$requesterName',
+            'ScribbleNameFixed': false,
+            'Reference': 'Client #123',
+            'ReturnUrl': 'http://signhost.com',
+            'Context': null
+          },
+          {
+            'Email': req.body.ReceiverEmail,
+            'Mobile': null,
+            'Iban': null,
+            'BSN': null,
+            'RequireScribbleName': false,
+            'RequireScribble': true,
+            'RequireEmailVerification': true,
+            'RequireSmsVerification': false,
+            'RequireIdealVerification': false,
+            'RequireDigidVerification': false,
+            'RequireKennisnetVerification': false,
+            'RequireSurfnetVerification': false,
+            'SendSignRequest': true,
+            'SendSignConfirmation': null,
+            'SignRequestMessage': 'Hello, could you please sign this document? Best regards, IndoVidence',
+            'DaysToRemind': 15,
+            'Language': 'en-US',
+            'ScribbleName': 'IndoVidence',
+            'ScribbleNameFixed': false,
+            'Reference': 'Client #123',
+            'ReturnUrl': 'http://signhost.com',
+            'Context': null
+          }
+        ],
+        'Reference': 'Contract #123',
+        'PostbackUrl': 'http://example.com/postback.php',
+        'SignRequestMode': 2,
+        'DaysToExpire': 30,
+        'SendEmailNotifications': true,
+        'Context': null
+      };
+   var options = {
+     method: 'post',
+     body: postData,
+     json: true,
+     url: 'https://api-staging.signhost.com/api/transaction',
+     headers: {
+      'Application': 'APPKey SignHost a9QLKXQvQm7k0JoPJcnkfwYyDzezGbKh',
+      'Authorization': 'APIKey 6ss6vTWwAeCRPfHXe3mPhFSzjH5i9Asr',  
+      'Accept': '*/*', 
+      'Content-Type': 'application/json', 
+      'Connection': 'keep-alive' 
+     }
+   };
 
-   digitalSignSh.stdout.on('data', function (data) {
-      var parsedData = JSON.parse(data)
+   // if creating transaction is successfull then upload file
+   request(options, function (err, res, body) {
+      var uploadUrl = 'https://api-staging.signhost.com/api/file/' + body.File.Id;
+      var options2 = {
+        method: 'put',
+        url: uploadUrl,
+        headers: {
+         'Application': 'APPKey SignHost a9QLKXQvQm7k0JoPJcnkfwYyDzezGbKh',
+         'Authorization': 'APIKey 6ss6vTWwAeCRPfHXe3mPhFSzjH5i9Asr',  
+         'Accept': '*/*', 
+         'Content-Type': 'application/pdf', 
+         'Connection': 'keep-alive' 
+        }
+      };
 
-      var uploadFileSh = spawn('bash', [ 'upload-file.sh', parsedData.File.Id], {
-         cwd: process.env.HOME + '/dev/digiSign',
-         env:_.extend(process.env, { PATH: process.env.PATH + ':/usr/local/bin' })
-      });
+      unirest
+         .put(uploadUrl)
+         .headers({
+            'Application': 'APPKey SignHost a9QLKXQvQm7k0JoPJcnkfwYyDzezGbKh',
+            'Authorization': 'APIKey 6ss6vTWwAeCRPfHXe3mPhFSzjH5i9Asr',  
+            'Accept': '*/*', 
+            'Content-Type': 'application/pdf', 
+            'Connection': 'keep-alive' 
+           })
+         .attach('contract.pdf', path.join(__dirname, '../contract.pdf'))
+         .end(function (response) {
+            console.log(response.body)
+         }) 
 
-      uploadFileSh.stdout.on('data', function (data) {
-         console.log('stdout: ' + data);
-      });
+      })
 
-      uploadFileSh.stderr.on('data', function (data) {
-         console.log('stderr: ' + data);
-      });
-
-      uploadFileSh.on('close', function (code) {
-         console.log('child process exited with code ' + code);
-      });
-
-      console.log('stdout: ' + data);   
-   });
-
-   digitalSignSh.stderr.on('data', function (data) {
-      console.log('stderr: ' + data);
-   });
-
-   digitalSignSh.on('close', function (code) {
-      console.log('child process exited with code ' + code);
-   });
-
-  res.render('requestSuccess', { title: digitalSignSh });
+  res.render('requestSuccess', { title: 'Request is successfully processed !'});
 });
 
 module.exports = router;
