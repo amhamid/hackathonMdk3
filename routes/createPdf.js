@@ -2,7 +2,6 @@ var PDFDocument = require('pdfkit')
 var express = require('express');
 var fs = require('fs')
 var router = express.Router();
-var spawn = require('child_process').spawn;
 var _ = require('underscore')
 var request = require('request')
 var path = require('path')
