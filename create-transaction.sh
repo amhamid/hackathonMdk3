@@ -6,7 +6,7 @@ receiverName=$3
 receiverEmail=$4
 
  curl -H 'Application: APPKey SignHost a9QLKXQvQm7k0JoPJcnkfwYyDzezGbKh' \
-      -H 'Authorization: APIKey MOnvOAVTK14D46YeuHaSb9SeochIpSVT'  \
+      -H 'Authorization: APIKey 6ss6vTWwAeCRPfHXe3mPhFSzjH5i9Asr'  \
       -H 'Accept: */*' \
       -H 'Content-Type: application/json' \
       -H 'Connection: keep-alive' \
