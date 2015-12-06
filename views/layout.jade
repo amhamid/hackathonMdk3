@@ -1,0 +1,39 @@
+doctype html
+html
+  - var imageUrl = "/images"
+  - var bootstrapCssUrl = "/bootstrap/css/bootstrap.min.css"
+  - var bootstrapJsUrl = "/bootstrap/js/bootstrap.min.js"
+  - var jqueryJsUrl = "/jquery/jquery.min.js"
+  - var bootstrapValidatorJsUrl = "/bootstrap-validator/validator.min.js"
+
+  block vars
+
+  head
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title= title
+    
+    link(rel='stylesheet', href='#{bootstrapCssUrl}')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+
+  body
+    nav.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+      div.container
+        div.collapse.navbar-collapse
+          ul.nav.navbar-nav
+            li
+              a(href='/') Home
+            li
+              a(href='/registration') Registration
+            li
+              a(href='/request') New Request
+            li
+              a(href='/overview') Request Overview
+
+    .container
+      block content
+
+    //- this is to make page loads faster
+    script(src='#{jqueryJsUrl}')
+    script(src='#{bootstrapJsUrl}')
+    script(src='#{bootstrapValidatorJsUrl}')
+              

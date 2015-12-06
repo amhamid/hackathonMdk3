@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  h1= title
+
+  br
+  form(role='form' data-toggle='validator' method='post' action='/createUser')
+    div.form-group.has-feedback
+      label(for='companyName') Company Name
+      input.form-control(id='companyName' type='text' placeholder='PT. Indofood' data-error='company name is required' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='contactName') Contact Name
+      input.form-control(id='contactName' type='text' placeholder='Eddy Hartono' data-error='contact name is required' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='email') Email
+      input.form-control(id='email' type='email' placeholder='ehartono@indofood.co.id' data-error='email is invalid' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='pwd') Password
+      input.form-control(id='pwd' type='password' data-minlength='8' data-error='minimum length is 8' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='pwd2') Re-enter Password
+      input.form-control(id='pwd2' type='password' data-minlength='8' data-error='minimum length is 8' data-match="#pwd" data-match-error="Passwords don't match" required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group 
+      button.btn.btn-primary(type='submit') Submit
+  

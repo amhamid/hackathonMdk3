@@ -1,0 +1,50 @@
+extends layout
+
+block content
+  h1= title
+
+  br
+  form(role='form' data-toggle='validator' method='post' action='/createPdf')
+    div.form-group.has-feedback
+      label(for='RequesterName') Requester Name
+      input.form-control(id='RequesterName' name='RequesterName' type='text' placeholder='Gouda BV' data-error='Requester name is required' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='RequesterEmail') Requester Email
+      input.form-control(id='RequesterEmail' name='RequesterEmail' type='email' placeholder='exporter@gouda.nl' data-error='Requester email is required' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='ReceiverName') Receiver Name
+      input.form-control(id='ReceiverName' name='ReceiverName' type='text' placeholder='PT. Indofood' data-error='Receiver name is required' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='ReceiverEmail') Receiver Email
+      input.form-control(id='ReceiverEmail' name='ReceiverEmail' type='email' placeholder='importer@indofood.co.id' data-error='Receiver email is required' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='Product') Product name
+      input.form-control(id='Product' name='Product' type='text' placeholder='Cheese' data-error='Product is required' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='Weight') Weight in KG
+      input.form-control(id='Weight' name='Weight' type='number' min='0' placeholder='1000' data-error='Weight is required' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='Value') Value in US Dollars
+      input.form-control(id='Value' name='Value' type='number' min='0' placeholder='50000' data-error='Value is required and should be >= 0' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group.has-feedback
+      label(for='Date') Execution date
+      input.form-control(id='Date' name='Date' type='text' placeholder='dd-mm-yyyy' pattern='^(0[1-9]|[12][0-9]|3[01])\-(0[1-9]|1[012])\-(19|20)[0-9][0-9]$' data-error='Plan date is required and must be in dd-mm-yyyy format' required)
+      span.glyphicon.form-control-feedback(aria-hidden='true')
+      div.help-block.with-errors
+    div.form-group 
+      button.btn.btn-primary(type='submit') Submit
+  
